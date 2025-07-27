@@ -3,7 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-
+use App\Jobs\NotifyFansOfNewPost;
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -20,5 +20,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         //
+        $this->app->singleton(NotifyFansOfNewPost::class);
     }
 }
