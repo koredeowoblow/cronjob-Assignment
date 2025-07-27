@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Jobs\NotifyFansOfNewPost;
+use App\Events\NewPostCreated;
 
 class PostController extends Controller
 {
@@ -17,7 +18,7 @@ class PostController extends Controller
             'body' => 'required|string',
         ]);
 
-       $author =$request->user();
+        $author = $request->user();
 
 
         $post = Post::create([
@@ -27,7 +28,7 @@ class PostController extends Controller
         ]);
 
         dispatch(new NotifyFansOfNewPost($post, $author));
-
+        broadcast(new NewPostCreated($post))->toOthers();
         return response()->json([
             'message' => 'Post created successfully, fans will be notified.',
             'post' => $post,
