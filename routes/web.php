@@ -8,3 +8,4 @@ Route::get('/', function () {
 });
 
 Route::post("/send",[TestingController::class , "Notifies"]);
+Route::post('/sign-up', [TestingController::class, 'signUp']);

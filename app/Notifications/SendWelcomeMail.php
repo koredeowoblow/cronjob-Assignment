@@ -7,16 +7,16 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class sendUserCount extends Notification
+class SendWelcomeMail extends Notification implements ShouldQueue
 {
     use Queueable;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct(public string $name, public string $email)
+    public function __construct()
     {
-    
+
     }
 
     /**
@@ -26,7 +26,7 @@ class sendUserCount extends Notification
      */
     public function via(object $notifiable): array
     {
-        return ['mail'];
+        return ['mail','database'];
     }
 
     /**
@@ -37,8 +37,17 @@ class sendUserCount extends Notification
         return (new MailMessage)
         ->subject('Welcome to daystar')
             ->line('You just successfully sign up to these email')
-           ->line("using these name {$this->name}, and email:{$this->email}")
+           ->line("using these name {$notifiable->name}, and email:{$notifiable->email}")
             ->line('Thank you for using our application!');
+    }
+
+    public function toDatabase(object $notifiable): array
+    {
+        return [
+            'name' => $notifiable->name,
+            'email' => $notifiable->email,
+            'message' => 'You just successfully signed up',
+        ];
     }
 
     /**
